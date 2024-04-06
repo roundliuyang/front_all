@@ -21,12 +21,12 @@
     >{{ $t("menu.addSys") }}
     </el-button
     >
-    <!--    <MenuSysForm-->
-    <!--        v-if="activeSys.menu"-->
-    <!--        :key="activeSys.menu.id"-->
-    <!--        :value="sysForm"-->
-    <!--        @change="refresh"-->
-    <!--    />-->
+    <MenuSysForm
+        v-if="activeSys.menu"
+        :key="activeSys.menu.id"
+        :value="sysForm"
+        @change="refresh"
+    />
     <div style="margin-bottom: 12px;display: flex; justify-content: space-between;">
       <div>
         <el-button class="add" @click="addSys">{{ $t("common.Added") }}</el-button>
@@ -77,6 +77,12 @@
       </el-table-column>
     </CoolEleTable>
 
+    <!--
+      @change="refresh" 是一个事件监听器。在 Vue.js 中，@change 表示监听一个名为 "change" 的事件，当该事件被触发时，会执行相关的处理函数。
+      在这种情况下，当 <MenuForm> 组件中的某些内容发生改变时（例如用户进行了某种操作导致菜单表单发生了变化），就会触发 "change" 事件。一旦这个事件被触发，
+      Vue.js 将会调用名为 "refresh" 的方法或函数。
+      因此，@change="refresh" 表示当 <MenuForm> 组件内部发生变化时，会调用父组件中的 "refresh" 方法来进行刷新或更新。
+    -->
     <MenuForm
         :showMenuForm.sync="showMenuForm"
         :value="activeMenu"
@@ -89,7 +95,7 @@
 
 <script>
 import MenuApi from "@/api/MenuApi";
-// import MenuSysForm from "./MenuSysForm.vue";
+import MenuSysForm from "./MenuSysForm.vue";
 import {mapState} from "vuex";
 import {Menu, Sys} from "./menu";
 import MenuForm from "./MenuForm.vue";
@@ -98,7 +104,7 @@ import MenuForm from "./MenuForm.vue";
 import CoolEleTable from "@/components/CoolEmTable.vue";
 
 export default {
-  components: {MenuForm, CoolEleTable},
+  components: {MenuForm, CoolEleTable, MenuSysForm},
   name: "MenuApp",
   // 在Vue.js中，data()是组件定义中的一个关键选项。它用于定义组件数据属性的初始状态。data()函数应该返回一个对象，其中每个键代表一个数据属性，其值表示该属性的初始状态。
   data() {
@@ -182,7 +188,9 @@ export default {
       if (this.activeName == "last") {
         obj = new Sys();
       } else {
+        // 这里的 this.allList.filter() 方法根据条件筛选出符合条件的数据，并返回一个新的数组
         let arr = this.allList.filter(i => (i["menu"].id == this.activeSysIdx ? i : i[0]));
+        // 过 [0] 取得筛选后数组的第一个元素，即符合条件的数据对象。... 操作符用于将这个对象的属性解构出来，从而创建一个新的对象 obj。
         obj = {...arr[0]};
       }
       return obj;
@@ -202,13 +210,18 @@ export default {
       // console.log(res, 11);
       return res;
     },
+    /*
+        这里使用了对象的展开语法 {...}，这个语法可以将对象的属性和值展开到一个新的对象中。this.activeSys.menu 包含了当前活动系统的菜单对象，
+        通过 {...this.activeSys.menu} 将其属性和值复制到新的对象中。然后，通过 , 将一个新的属性 lang 和其对应的值 this.sysName 添加到了新对象中。
+     */
     sysForm() {
       return {...this.activeSys.menu, lang: this.sysName};
     }
   },
+  // 在 Vue.js 组件的生命周期中，mounted 钩子函数表示 Vue 实例被挂载到 DOM 后执行的函数
   mounted() {
     this.getAllList();
-    this.sortRow();
+    // this.sortRow();
     // this.sortMenu();
     // console.log("表单数据mounted", this.sysMenu);
   },
