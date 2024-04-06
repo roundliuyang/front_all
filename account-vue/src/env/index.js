@@ -27,7 +27,10 @@ export default new class {
     // get account() {
     //     return this.vals.VUE_APP_ACCOUNT
     // }
-    //
+    get account() {
+        return "http://127.0.0.1:8080"
+    }
+
     // get vueconfig() {
     //     return {
     //         productionTip: this.vals.NODE_ENV === 'production',

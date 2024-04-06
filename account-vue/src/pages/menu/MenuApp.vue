@@ -21,12 +21,12 @@
     >{{ $t("menu.addSys") }}
     </el-button
     >
-<!--    <MenuSysForm-->
-<!--        v-if="activeSys.menu"-->
-<!--        :key="activeSys.menu.id"-->
-<!--        :value="sysForm"-->
-<!--        @change="refresh"-->
-<!--    />-->
+    <!--    <MenuSysForm-->
+    <!--        v-if="activeSys.menu"-->
+    <!--        :key="activeSys.menu.id"-->
+    <!--        :value="sysForm"-->
+    <!--        @change="refresh"-->
+    <!--    />-->
     <div style="margin-bottom: 12px;display: flex; justify-content: space-between;">
       <div>
         <el-button class="add" @click="addSys">{{ $t("common.Added") }}</el-button>
@@ -41,26 +41,41 @@
       >
       </el-input>
     </div>
-<!--    <CoolEleTable-->
-<!--        :tableList="sysMenu"-->
-<!--        :columns="columns"-->
-<!--        :currentPage="currentPage"-->
-<!--        @SelectionChange="value => (selected = value)"-->
-<!--    >-->
-<!--      <el-table-column slot="sort" align="center" width="130" :label="$t('menu.sort')" prop="sort">-->
-<!--        <i class="el-icon-rank"></i>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column slot="btn" align="center" :label="$t('common.operate')" prop="id">-->
-<!--        <template #default="{row}">-->
-<!--          <el-button type="text" @click="edit(row.id)">-->
-<!--            {{ $t("common.modification") }}-->
-<!--          </el-button>-->
-<!--          <el-button type="text" @click="delMenu(row.id)">-->
-<!--            {{ $t("common.delete") }}-->
-<!--          </el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--    </CoolEleTable>-->
+    <!-- 这段代码是一个使用了 <CoolEleTable> 组件的 Vue 模板，
+     <CoolEleTable>: 这是一个自定义的组件，可能是一个封装了 Element UI 表格的组件，用于显示数据表格。它接收一些属性和事件来配置和处理表格的行为和展示。 
+        :tableList="sysMenu": 这里使用了 Vue 的属性绑定语法 : 将 sysMenu 数据绑定到了 <CoolEleTable> 组件的 tableList 属性上。这表明 sysMenu 数据将被展示在表格中。
+        :columns="columns": 类似地，这里也是将 columns 对象绑定到了 <CoolEleTable> 组件的 columns 属性上，用于配置表格的列信息。
+        :currentPage="currentPage": 这里将 currentPage 属性绑定到了 <CoolEleTable> 组件的 currentPage 属性上，用于管理当前所在的页码。
+        <el-table-column>: 这是 Element UI 表格组件中的列定义。在这里定义了两个自定义列，一个用于显示排序图标，一个用于显示操作按钮。
+            •slot="sort": 这里使用了 Vue 的插槽功能，将这个 <el-table-column> 定义为一个名为 sort 的插槽。这个插槽可以在 <CoolEleTable> 组件中被引用。
+            •slot="btn": 同样，这个 <el-table-column> 定义了一个名为 btn 的插槽，用于显示操作按钮。
+        <template #default="{row}">: 这里是插槽的具体内容，使用了 Vue 的模板语法。#default 是插槽的默认名称，{row} 则是插槽的参数，表示当前行的数据。在这个模板中，定义了两个按钮，一个用于编辑操作，一个用于删除操作。
+            •<el-button type="text" @click="edit(row.id)">: 这是一个 Element UI 的按钮组件，用于触发编辑操作。通过 @click 监听按钮的点击事件，并调用 edit 方法，传递当前行的 id 值作为参数。
+        <el-button type="text" @click="delMenu(row.id)">: 类似地，这是另一个 Element UI 的按钮组件，用于触发删除操作。同样通过 @click 监听按钮的点击事件，并调用 delMenu 方法，传递当前行的 id 值作为参数。
+        
+        总结：
+        综上所述，这段代码是一个包含了数据表格和操作按钮的 Vue 模板，用于展示和操作表格中的数据。    
+     -->
+    <CoolEleTable
+        :tableList="sysMenu"
+        :columns="columns"
+        :currentPage="currentPage"
+        @SelectionChange="value => (selected = value)"
+    >
+      <el-table-column slot="sort" align="center" width="130" :label="$t('menu.sort')" prop="sort">
+        <i class="el-icon-rank"></i>
+      </el-table-column>
+      <el-table-column slot="btn" align="center" :label="$t('common.operate')" prop="id">
+        <template #default="{row}">
+          <el-button type="text" @click="edit(row.id)">
+            {{ $t("common.modification") }}
+          </el-button>
+          <el-button type="text" @click="delMenu(row.id)">
+            {{ $t("common.delete") }}
+          </el-button>
+        </template>
+      </el-table-column>
+    </CoolEleTable>
 
     <MenuForm
         :showMenuForm.sync="showMenuForm"
@@ -74,12 +89,18 @@
 
 <script>
 import MenuApi from "@/api/MenuApi";
-import {Menu} from "./menu";
+// import MenuSysForm from "./MenuSysForm.vue";
+import {mapState} from "vuex";
+import {Menu, Sys} from "./menu";
 import MenuForm from "./MenuForm.vue";
+// import Sortable from "sortablejs";
+// import  VueI18n  from "@/i18n/index";
+import CoolEleTable from "@/components/CoolEmTable.vue";
 
 export default {
-  components: {MenuForm},
+  components: {MenuForm, CoolEleTable},
   name: "MenuApp",
+  // 在Vue.js中，data()是组件定义中的一个关键选项。它用于定义组件数据属性的初始状态。data()函数应该返回一个对象，其中每个键代表一个数据属性，其值表示该属性的初始状态。
   data() {
     return {
       activeName: "1", // 当前点击的tabs
@@ -115,6 +136,82 @@ export default {
       activeMenu: new Menu() // 当前选中的子菜单数据
     };
   },
+  computed: {
+    /*
+        使用 Vuex 的 mapState 辅助函数来映射 menus 状态到组件的计算属性中。
+        ...mapState({: 这里使用了 JavaScript 中的展开运算符（...）来展开 mapState 辅助函数返回的对象。
+        定义了一个名为 menus 的计算属性，它接收一个参数 state，该参数代表 Vuex store 中的状态。在这个计算属性中，通过 JSON.stringify(state.menus) 
+        先将 state.menus 对象转换为字符串，再通过 JSON.parse() 方法将其解析回一个新的 JavaScript 对象。这样做的目的是为了创建 menus 的深拷贝，
+        以确保在组件中对 menus 进行修改时不会直接影响 Vuex store 中的状态。
+     */
+    ...mapState({
+      menus: state => JSON.parse(JSON.stringify(state.menus))
+    }),
+    // 表格绑定的数据，切换tab时，对应的子菜单数据
+    sysMenu() {
+      // 在这里，首先创建了一个正则表达式对象 reg，用于根据用户输入的搜索关键字动态过滤数据。
+      let reg = RegExp(this.searchKey, "i");
+      return this.menus
+          // 通过 map 方法遍历 menus 数组，根据当前活动的系统标签 activeSysIdx 来筛选出对应的子菜单数据。如果某个菜单的 id 与 activeSysIdx 匹配，则返回该菜单的子菜单数组，否则返回空数组。
+          .map(i => {
+            return i["menu"].id == this.activeSysIdx ? i["children"] : [];
+          })
+          // 使用 flat() 方法将多维数组扁平化，将所有子菜单数据放在一个数组中。
+          .flat()
+          // 对每个子菜单对象进行映射，创建一个新的对象 curr，将子菜单对象中的部分属性提取出来，包括 name、id、url、seq 以及根据语言ID（假设为1）匹配找到对应语言名称 lang。
+          .map(item => {
+            let curr = {};
+            curr.name = item.name;
+            curr.id = item.id;
+            curr.url = item.url;
+            curr.seq = item.seq;
+            let str = item.langs.find(lang => lang.langId == 1);
+            curr.lang = str ? str.name : "";
+            return curr;
+          })
+          // 使用 filter 方法根据用户输入的搜索关键字进行过滤，只返回包含搜索关键字的子菜单数据。如果子菜单的名称、语言或URL中有任何一个与搜索关键字匹配，则保留该子菜单数据。
+          .filter(s => {
+            if (reg.test(s.name) || reg.test(s.lang) || reg.test(s.url)) {
+              return s;
+            }
+          });
+    },
+    // 当前展示的所有数据
+    activeSys() {
+      let obj;
+      if (this.activeName == "last") {
+        obj = new Sys();
+      } else {
+        let arr = this.allList.filter(i => (i["menu"].id == this.activeSysIdx ? i : i[0]));
+        obj = {...arr[0]};
+      }
+      return obj;
+      // return {...this.allList.filter(i => i["menu"].id == this.activeSysIdx ? i : i[0])}
+      // return Object.assign({},{...this.allList.filter(i => i["menu"].id == this.activeSysIdx ? i : i[0])})
+    },
+    // 当前展示的父菜单的英文名
+    sysName() {
+      let res = "";
+      this.menuList.filter(i => {
+        if (i.id == this.activeSysIdx) {
+          let flat = i.langs.find(lang => lang.langId == 1)
+          res = flat ? flat.name : ''
+          // res = i.langs.find((lang) => lang.langId == 1)?.name;
+        }
+      });
+      // console.log(res, 11);
+      return res;
+    },
+    sysForm() {
+      return {...this.activeSys.menu, lang: this.sysName};
+    }
+  },
+  mounted() {
+    this.getAllList();
+    this.sortRow();
+    // this.sortMenu();
+    // console.log("表单数据mounted", this.sysMenu);
+  },
   methods: {
     //获取页面的全部数据
     async getAllList() {
@@ -131,8 +228,11 @@ export default {
             // console.log('当前活动的页面',this.activeSys);
             // console.log("总数据", data.list);
           })
-      // .catch(err => console.log(err));
       // .catch(err => this.$error(this.$t("menu.confirm.getMenuF")));
+    },
+    handleClick(tab) {
+      // console.log(tab);
+      this.activeSysIdx = Number(tab.name);
     },
     addSys() {
       this.showMenuForm = true;
@@ -140,6 +240,15 @@ export default {
       let menu = new Menu()
       menu.parentId = this.activeSysIdx
       this.activeMenu = {...menu, lang: this.menuName};
+      // console.log(this.activeMenu);
+    },
+    edit(_id) {
+      this.showMenuForm = true;
+      let currData = this.activeSys.children.find(i => i.id === _id);
+      let str = currData.langs.find(lang => lang.langId == 1);
+      this.menuName = str ? str.name : "";
+      this.activeMenu = {...currData, lang: this.menuName};
+      // console.log("当前数据", this.activeMenu);
     },
     async refresh(sysId) {
       try {
@@ -147,16 +256,176 @@ export default {
         this.activeName = String(sysId);
         await this.getAllList();
       } catch (error) {
-        console.log(error);
-        // this.$error(this.$t("menu.confirm.updateMenuF"));
+        // console.log(error);
+        this.$error(this.$t("menu.confirm.updateMenuF"));
       }
     },
-    delAll() {
+    // 子菜单拖拽排序
+    // sortRow() {
+    //   const Rbody = document.querySelector(".el-table tbody");
+    //   // console.log(Rbody);
+    //   // console.log('指向vue', this);
+    //   const _this = this;
+    //   Sortable.create(Rbody, {
+    //     draggable: "tr", // 允许拖拽的项目类名
+    //     handle: "td",
+    //     async onEnd({ newIndex, oldIndex }) {
+    //       // console.log(_this.sysMenu[oldIndex]);
+    //       // console.log(_this.sysMenu[newIndex]);
+    //       let data, ids, first;
+    //       if (oldIndex < newIndex) {
+    //         //自下而上
+    //         data = _this.sysMenu.slice(oldIndex, newIndex + 1);
+    //         ids = data.map((i) => i.id);
+    //         first = ids.splice(0, 1)[0];
+    //         ids.push(first);
+    //       } else {
+    //         //自上而下
+    //         data = _this.sysMenu.slice(newIndex, oldIndex + 1);
+    //         ids = data.map((i) => i.id);
+    //         first = ids.splice(data.length - 1, 1)[0];
+    //         ids.unshift(first);
+    //       }
+    //       let sortArr = data.map((i, j) => {
+    //         return {
+    //           id: ids[j],
+    //           seq: i.seq
+    //         };
+    //       });
+    //       // console.log('拖拽数据',sortArr);
+    //       await MenuApi.sortApi(sortArr);
+    //       await _this.getAllList();
+    //       _this.$message({
+    //         message: _this.$t("menu.confirm.sortS"),
+    //         type: "success",
+    //         duration: 2000
+    //       });
+    //       _this.sortRow();
+    //       parent.postMessage(
+    //           {
+    //             type: "menu",
+    //             menuMsg: Math.random()
+    //           },
+    //           parent.origin
+    //       );
+    //     }
+    //   });
+    // },
+    // sortMenu() {
+    //   // 要找拖拽的父元素！！！
+    //   const Rbody = document.querySelector(".el-tabs__nav-scroll .el-tabs__nav");
+    //   // console.log(Rbody);
+    //   const _this = this;
+    //   Sortable.create(Rbody, {
+    //     // ghostClass: "blue-background-class", // drop placeholder的css类名
+    //     handle: ".el-tabs__item",
+    //     async onEnd({ newIndex, oldIndex }) {
+    //       // console.log(newIndex, oldIndex);
+    //       let data, ids, first;
+    //       if (oldIndex < newIndex) {
+    //         //自上而下
+    //         // console.log(
+    //         //   "排序前id",
+    //         //   _this.menuList.map(i => i.id)
+    //         // );
+    //         // console.log(
+    //         //   "seq",
+    //         //   _this.menuList.map(i => i.seq)
+    //         // );
+    //         data = _this.menuList.slice(oldIndex, newIndex + 1);
+    //         ids = data.map(i => i.id);
+    //         // console.log(ids, data.map(i => i.seq), '排序前');
+    //         first = ids.splice(0, 1)[0];
+    //         ids.push(first);
+    //       } else {
+    //         //自下而上
+    //         // console.log(
+    //         //   "排序前id",
+    //         //   _this.menuList.map(i => i.id)
+    //         // );
+    //         // console.log(
+    //         //   "seq",
+    //         //   _this.menuList.map(i => i.seq)
+    //         // );
+    //         data = _this.menuList.slice(newIndex, oldIndex + 1);
+    //         ids = data.map(i => i.id);
+    //         // console.log(ids, data.map(i => i.seq), '排序前');
+    //         first = ids.splice(data.length - 1, 1)[0];
+    //         ids.unshift(first);
+    //       }
+    //       let sortArr = data.map((i, j) => {
+    //         return {
+    //           id: ids[j],
+    //           seq: i.seq
+    //         };
+    //       });
+    //       // console.log("排序后", sortArr);
+    //       // console.log('tabs拖拽数据',sortArr);
+    //       await MenuApi.sortApi(sortArr).then(_this.getAllList());
+    //       _this.$message({
+    //         message: "排序成功",
+    //         type: "success",
+    //         duration: 1000
+    //       });
+    //       parent.postMessage(
+    //           {
+    //             type: "menu",
+    //             menuMsg: Math.random()
+    //           },
+    //           parent.origin
+    //       );
+    //       _this.sortMenu();
+    //     }
+    //   });
+    // },
+    delMenu(_id) {
+      this.$confirm(this.$t("common.delTitle"), this.$t("common.prompt"), {
+        type: "warning"
+      })
+          .then(async () => {
+            try {
+              await MenuApi.delById(_id);
+              this.$info(this.$t("common.delSuccess")).then(() => this.getAllList());
+              parent.postMessage(
+                  {
+                    type: "menu",
+                    menuMsg: Math.random()
+                  },
+                  parent.origin
+              );
+            } catch (error) {
+              this.$error(this.$t("common.delFail"));
+            }
+          })
+          .catch(e => e);
     },
+    delAll() {
+      // console.log(this.selected);
+      if (this.selected.length == 0) return;
+      this.$confirm(this.$t("common.delTitle"), this.$t("common.prompt"), {
+        type: "warning"
+      })
+          .then(async () => {
+            try {
+              await MenuApi.delete(this.selected.map(sel => sel.id));
+              this.$info(this.$t("common.delSuccess")).then(() => this.getAllList());
+              parent.postMessage(
+                  {
+                    type: "menu",
+                    menuMsg: Math.random()
+                  },
+                  parent.origin
+              );
+            } catch (error) {
+              console.log(error)
+              // this.$error(this.$t("common.delFail"));
+            }
+          })
+          .catch(e => e);
+    }
   }
-}
+};
 </script>
-
 <style lang="scss" scoped>
 /deep/ .el-input {
   width: 250px;

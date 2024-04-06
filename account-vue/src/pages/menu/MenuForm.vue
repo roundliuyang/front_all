@@ -1,20 +1,20 @@
 <template>
   <el-dialog :title="$t('menu.menuForm.title')" :visible="showMenuForm" width="45%" @close="close">
     <el-form
-      ref="form"
-      label-width="150px"
-      :model="formData"
-      :label-position="labelPosition"
-      :rules="rules"
+        ref="form"
+        label-width="150px"
+        :model="formData"
+        :label-position="labelPosition"
+        :rules="rules"
     >
       <el-form-item :label="$t(`menu.mk`)">
         <el-select v-model="formData.parentId">
           <el-option label="请选择" :value="0"></el-option>
           <el-option
-            v-for="item in menuList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
+              v-for="item in menuList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -161,4 +161,3 @@ export default {
   width: 100%;
 }
 </style>
-

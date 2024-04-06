@@ -16,4 +16,7 @@ module.exports = {
       filename: 'menu.html'
     },
   },
+  devServer: {
+    port: 58091,
+  },
 };
