@@ -15,6 +15,11 @@ module.exports = {
       template: 'public/index.html',
       filename: 'menu.html'
     },
+    yemian: {
+      entry: 'src/pages/yemian/main.js',
+      template: 'public/index.html',
+      filename: 'yemian.html'
+    },
   },
   devServer: {
     port: 58091,
