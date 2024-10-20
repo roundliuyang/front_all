@@ -14,12 +14,16 @@
     <el-button
         type="primary"
         plain
-        @click="
-        activeName = 'last';
-        activeSysIdx = 0;
-      "
-    >{{ $t("menu.addSys") }}
+        @click="activeName = 'last';activeSysIdx = 0;">
+      {{ $t("menu.addSys") }}
     </el-button>
+
+    <YemianSysForm
+        v-if="activeSys.menu"
+        :key="activeSys.menu.id"
+        :value="sysForm"
+        @change="refresh"
+    />
 
     <div style="margin-bottom: 12px;display: flex; justify-content: space-between;">
       <div>
@@ -41,6 +45,19 @@
         :currentPage="currentPage"
         @SelectionChange="value => (selected = value)"
     >
+      <el-table-column slot="sort" align="center" width="130" :label="$t('menu.sort')" prop="sort">
+        <i class="el-icon-rank"></i>
+      </el-table-column>
+      <el-table-column slot="btn" align="center" :label="$t('common.operate')" prop="id">
+        <template #default="{row}">
+          <el-button type="text" @click="edit(row.id)">
+            {{ $t("common.modification") }}
+          </el-button>
+          <el-button type="text" @click="delMenu(row.id)">
+            {{ $t("common.delete") }}
+          </el-button>
+        </template>
+      </el-table-column>
     </CoolEleTable>
   </div>
 </template>
@@ -50,9 +67,12 @@
 import {mapState} from "vuex";
 import CoolEleTable from "@/components/CoolEmTable.vue";
 import {Sys} from "@/pages/menu/menu";
+import MenuApi from "@/api/MenuApi";
+import YemianSysForm from "./YemianSysForm"
+
 
 export default {
-  components: { CoolEleTable},
+  components: {CoolEleTable, YemianSysForm},
   name: "YemianApp",
   data() {
     return {
@@ -91,7 +111,7 @@ export default {
     sysMenu() {
       // 在这里，首先创建了一个正则表达式对象 reg，用于根据用户输入的搜索关键字动态过滤数据。
       let reg = RegExp(this.searchKey, "i");
-      var res =  this.menus
+      var res = this.menus
           // 通过 map 方法遍历 menus 数组，根据当前活动的系统标签 activeSysIdx 来筛选出对应的子菜单数据。如果某个菜单的 id 与 activeSysIdx 匹配，则返回该菜单的子菜单数组，否则返回空数组。
           .map(i => {
             return i["menu"].id == this.activeSysIdx ? i["children"] : [];
@@ -115,8 +135,9 @@ export default {
               return s;
             }
           });
-      console.log("--------------------------------------")
+      console.log("--------------------------------------sysMenu start")
       console.log(res)
+      console.log("--------------------------------------sysMenu after")
       return res;
     },
     // 当前展示的所有数据
@@ -155,10 +176,35 @@ export default {
       return {...this.activeSys.menu, lang: this.sysName};
     }
   },
+  mounted() {
+    this.getAllList();
+    // this.sortRow();
+    // this.sortMenu();
+    // console.log("表单数据mounted", this.sysMenu);
+  },
 
   methods: {
+    //获取页面的全部数据
+    async getAllList() {
+      await MenuApi.list()
+          .then(data => {
+            this.$store.commit("setMenus", data.list);
+            this.allList = data.list;
+            this.menuList = [];
+            data.list.forEach(i => {
+              this.menuList.push(i.menu);
+            });
+            // console.log("父菜单数据", this.menuList);
+            // this.activeSys = data.list[0];
+            // console.log('当前活动的页面',this.activeSys);
+            // console.log("总数据", data.list);
+          })
+      // .catch(err => this.$error(this.$t("menu.confirm.getMenuF")));
+    },
     handleClick(tab) {
-      // console.log(tab);
+      console.log("---------------handleClick start");
+      console.log(tab);
+      console.log("---------------handleClick after");
       this.activeSysIdx = Number(tab.name);
     },
     addSys() {
@@ -166,6 +212,16 @@ export default {
     },
     delAll() {
 
+    },
+    async refresh(sysId) {
+      try {
+        this.activeSysIdx = sysId;
+        this.activeName = String(sysId);
+        await this.getAllList();
+      } catch (error) {
+        // console.log(error);
+        this.$error(this.$t("menu.confirm.updateMenuF"));
+      }
     },
   }
 }

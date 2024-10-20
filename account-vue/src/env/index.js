@@ -28,7 +28,7 @@ export default new class {
     //     return this.vals.VUE_APP_ACCOUNT
     // }
     get account() {
-        return "http://127.0.0.1:8080"
+        return "http://127.0.0.1:80"
     }
 
     // get vueconfig() {
