@@ -2,6 +2,7 @@ import Vue from  'vue'
 import App from  './YemianApp'
 import i18n from "@/i18n"
 import elementUI from "element-ui";
+import 'element-ui/lib/theme-chalk/index.css' //element-ui的css
 import swal from '@/plugins/sweetalert'
 import Vuex from 'vuex'
 

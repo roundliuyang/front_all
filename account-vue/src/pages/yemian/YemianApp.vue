@@ -66,7 +66,7 @@
 
 import {mapState} from "vuex";
 import CoolEleTable from "@/components/CoolEmTable.vue";
-import {Sys} from "@/pages/menu/menu";
+import {Sys} from "./menu"
 import MenuApi from "@/api/MenuApi";
 import YemianSysForm from "./YemianSysForm"
 
@@ -228,5 +228,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-form-item {
+  display: inline-block;
+}
 
+/deep/ .el-input {
+  width: 250px;
+}
+
+/deep/ .el-form-item__label {
+  padding: 0;
+}
+
+/deep/ .el-form-item {
+  margin-right: 40px;
+}
 </style>
