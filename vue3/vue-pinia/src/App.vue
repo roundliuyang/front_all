@@ -1,20 +1,41 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+
+// 1.导入 use 打头的方法
+import { useCounterStore } from '@/stores/counter'
+import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+
+// 2.执行方法得到store实例对象
+const counterStore = useCounterStore()
+console.log(counterStore)
+
+// 调用异步action
+onMounted(() => {
+  counterStore.loadList()
+})
+
+// 直接解构赋值（响应式丢失）
+//  const { count, doubleCount} = counterStore
+
+// 使用它storeToRefs包裹之后解构保持响应式
+const { count, doubleCount } = storeToRefs(counterStore)
+// 方法直接从原来的 counterStore 中解构赋值
+const { increment } = counterStore
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div>
+    <button @click="counterStore.increment">{{ counterStore.count }}</button>
+    {{ counterStore.doubleCount }}
+    <!-- 异步 action -->
+    <ul>
+      <li v-for="item in counterStore.list" :key="item.id">{{ item.name }}</li>
+    </ul>
+  </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <!-- storeToRefs包裹之后解构保持响应式 -->
+    <button @click="increment">{{ count }}</button>
+    {{ doubleCount }}
 </template>
 
 <style scoped>
