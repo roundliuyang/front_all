@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
   // const clearUserInfo = () => {
   //   userInfo.value = {}
   //   // 执行清除购物车的action
-  //   cartStore.clearCart()
+  //   // cartStore.clearCart()
   // }
   // 3. 以对象的格式把state和action return
   return {
