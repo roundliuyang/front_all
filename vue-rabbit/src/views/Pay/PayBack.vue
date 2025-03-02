@@ -1,4 +1,4 @@
-<!-- <script setup>
+<script setup>
 import { getOrderAPI } from '@/apis/pay'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -82,4 +82,4 @@ onMounted(() => getOrderInfo())
     margin-top: 50px;
   }
 }
-</style> -->
+</style>
