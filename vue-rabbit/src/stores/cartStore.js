@@ -42,8 +42,8 @@ export const useCartStore = defineStore('cart', () => {
   const delCart = async (skuId) => {
     if (isLogin.value) {
       // 调用接口实现接口购物车中的删除功能
-      // await delCartAPI([skuId])
-      // updateNewList()
+      await delCartAPI([skuId])
+      updateNewList()
     } else {
       // 思路：
       // 1. 找到要删除项的下标值 - splice
