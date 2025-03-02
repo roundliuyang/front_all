@@ -33,3 +33,5 @@ npm run build
 ```sh
 npm run lint
 ```
+
+支付账号：scobys4865@sandbox.com      密码：111111
